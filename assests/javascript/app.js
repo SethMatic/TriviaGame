@@ -14,6 +14,7 @@ function nextQuestion(){
     const isQuestionOver = (quizQuestions.length - 1) === currentQuestion;
     if(isQuestionOver){
         console.log("Game over homie!");
+        displayResult();
     } else {
        currentQuestion++;
         loadQuestion();
@@ -61,6 +62,7 @@ timer = setInterval(countDown,1000);
     $('#game').html(`
         <h4>${question}</h4>
         ${loadChoices(choices)}
+        ${loadRemaining()}
         `);
 
 }
@@ -77,6 +79,58 @@ timer = setInterval(countDown,1000);
            
         }
         return result;
+     }
+
+
+
+$(document).on('click','.choice',function(){
+    const selectedAnswer = $(this).attr('data-answer');
+    const correctAnswer = quizQuestions[currentQuestion].correctAnswer;
+
+    if (correctAnswer===selectedAnswer){
+ score++;
+ nextQuestion();
+     }else {lost++;
+        nextQuestion();
     }
+
+
+
+
+})
+
+function displayResult(){
+    const result = `
+    <p> You get ${score} question(s) right </p>
+    <p> You misseed ${lost} question(s) </p>
+    <p> Total  ${quizQuestions.length}  </p>
+    <button id="reset"> Reset Game </button>
+    
+    `;
+
+    $('#game').html(result);
+}
+
+$(document).on('click','#reset',function(){
+    console.log('testing')
+     counter = 30;
+     currentQuestion = 0;
+     score = 0;
+     lost = 0;
+     timer = null;
+
+     loadQuestion();
+
+});;
+
+
+function loadRemaining() {
+    const remaingQuestion = quizQuestions.length - (currentQuestion +1);
+    const totalQuestion = quizQuestions.length;
+
+    return `Remaing Question : ${remaingQuestion}/${totalQuestion}`;
+
+}
+
 
 loadQuestion()
